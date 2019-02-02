@@ -1,6 +1,10 @@
 package com.example.ayur;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +12,8 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,14 +23,17 @@ import android.widget.GridLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
     private CardView xiaomi,samsung,vivo,lenovo;
     ArrayAdapter<String> adapter;
     private DrawerLayout mDrawerLayout;
+    private NavigationView navigationView;
     private ActionBarDrawerToggle mToggle;
+    private Toolbar toolbar;
 //    public List<Card> options=new ArrayList<>();
     View view;
     @Override
@@ -35,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         samsung=(CardView) findViewById(R.id.samsungCard);
         vivo=(CardView) findViewById(R.id.vivoCard);
         lenovo=(CardView) findViewById(R.id.lenovoCard);
+        toolbar=(Toolbar) findViewById(R.id.tool_bar);
         xiaomi.setOnClickListener(this);
         samsung.setOnClickListener(this);
         vivo.setOnClickListener(this);
@@ -42,10 +52,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         mDrawerLayout=(DrawerLayout) findViewById(R.id.navigation) ;
+        navigationView=(NavigationView) findViewById(R.id.navigationID);
+        navigationView.setNavigationItemSelectedListener(this);
         mToggle=new ActionBarDrawerToggle(this,mDrawerLayout,R.string.open,R.string.close);
         mDrawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
     @Override
     public void onClick(View v) {
@@ -91,4 +104,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        Fragment myFragment=null;
+        Class fragmentClass;
+        int id=menuItem.getItemId();
+        Intent i;
+        switch (id){
+            case R.id.home:i=new Intent(this,MainActivity.class);startActivity(i);
+                break;
+            case R.id.settings:fragmentClass=Settings.class;
+                break;
+            case R.id.share: Toast.makeText(getApplicationContext(), "Share!....", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.abs:i=new Intent(this,Xiaomi.class);startActivity(i);
+                break;
+                default: Toast.makeText(getApplicationContext(), "Invalid !....", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+
+        return true;
+    }
 }
